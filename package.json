@@ -23,5 +23,8 @@
     "@babel/core": "^7.18.5",
     "@babel/node": "^7.18.5",
     "@babel/preset-env": "^7.18.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
