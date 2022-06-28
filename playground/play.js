@@ -1,5 +1,6 @@
 // import { tap, once } from '../chapter-04'
-import { curry } from '../chapter-06'
+// import { curry } from '../chapter-06'
+import '../functional-light-js-04-compose'
 
 // tap('fun')((arg) => console.log(`value is ${arg}`))
 
@@ -36,29 +37,29 @@ import { curry } from '../chapter-06'
 // factorial = memoized(factorial)
 // console.log(factorial(5))
 
-const loggerHelper = (mode, initialMessage, errorMessage, lineNo) => {
-  const handler = {
-    DEBUG() {
-      console.debug(initialMessage, `${errorMessage} at Line: ${lineNo}`);
-    },
-    ERROR() {
-      console.error(initialMessage, `${errorMessage} at Line: ${lineNo}`);
+// const loggerHelper = (mode, initialMessage, errorMessage, lineNo) => {
+//   const handler = {
+//     DEBUG() {
+//       console.debug(initialMessage, `${errorMessage} at Line: ${lineNo}`);
+//     },
+//     ERROR() {
+//       console.error(initialMessage, `${errorMessage} at Line: ${lineNo}`);
 
-    },
-    WARN() {
-      console.warn(initialMessage, `${errorMessage} at Line: ${lineNo}`);
-    },
-    default() {
-      throw 'Wrong mode'
-    }
-  }
-  return handler[mode]()
-}
+//     },
+//     WARN() {
+//       console.warn(initialMessage, `${errorMessage} at Line: ${lineNo}`);
+//     },
+//     default() {
+//       throw 'Wrong mode'
+//     }
+//   }
+//   return handler[mode]()
+// }
 
-let errorLogger = curry(loggerHelper)('ERROR')('Error at stats.js')
-let warnLogger = curry(loggerHelper)('WARN')('Warn at stats.js')
-let debugLogger = curry(loggerHelper)('DEBUG')('Deubg at stats.js')
+// let errorLogger = curry(loggerHelper)('ERROR')('Error at stats.js')
+// let warnLogger = curry(loggerHelper)('WARN')('Warn at stats.js')
+// let debugLogger = curry(loggerHelper)('DEBUG')('Deubg at stats.js')
 
-errorLogger('error message', 21)
-warnLogger('error message', 21)
-debugLogger('error message', 21)
+// errorLogger('error message', 21)
+// warnLogger('error message', 21)
+// debugLogger('error message', 21)
