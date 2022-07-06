@@ -1,6 +1,7 @@
 // import { tap, once } from '../chapter-04'
 // import { curry } from '../chapter-06'
-import '../functional-light-js-04-compose'
+// import '../functional-light-js-04-compose'
+import '../mostly-adequate-05-compose'
 
 // tap('fun')((arg) => console.log(`value is ${arg}`))
 
