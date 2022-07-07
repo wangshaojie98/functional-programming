@@ -1,4 +1,4 @@
-import R, { reduce, map, add } from 'ramda'
+import R, { reduce, map, add, replace } from 'ramda'
 
 var CARS = [
   {name: "Ferrari FF", horsepower: 660, dollar_value: 700000, in_stock: true},
@@ -54,13 +54,77 @@ var CARS = [
 
 // answer
 {
-  let average = R.curry(function(key, xs) { 
-    return reduce(add, 0, xs) / R.prop(key, xs); 
-  });
+  // const extractLength = R.prop('length')
+  // const calculateArraySum =  reduce(add, 0)
+  const calculateAverage = data => reduce(add, 0, data) / R.prop('length', data)
+  // let average = R.curry(function(name, data) { 
+  //   return reduce(add, 0, data) / R.prop(name, data); 
+  // });
   // average = R.compose(
   //   R.divide(R.prop('length')),
   //   reduce(add, 0)
   // )
-  const averageDollarValue = R.compose(average('length'), R.map(R.prop('dollar_value')));
+  const averageDollarValue = R.compose(calculateAverage, R.map(R.prop('dollar_value')));
   console.log('averageDollarValue: ', averageDollarValue(CARS));
+}
+
+
+// 练习 4:
+// ============
+// 使用 compose 写一个 sanitizeNames() 函数，返回一个下划线连接的小写字符串：例如：sanitizeNames(["Hello World"]) //=> ["hello_world"]。
+{
+  var _underscore = replace(/\W+/g, '_'); //<-- 无须改动，并在 sanitizeNames 中使用它
+  var sanitizeNames = undefined;
+}
+
+// answer
+{
+  var _underscore = replace(/\W+/g, '_'); //<-- 无须改动，并在 sanitizeNames 中使用它
+  var sanitizeNames = R.map(R.compose(_underscore, R.toLower, R.prop('name')))
+  console.log('sanitizeNames: ', sanitizeNames(CARS));
+}
+
+// 彩蛋 1:
+// ============
+// 使用 compose 重构 availablePrices
+
+var availablePrices = function(cars) {
+  var available_cars = R.filter(_.prop('in_stock'), cars);
+  return available_cars.map(function(x){
+    return accounting.formatMoney(x.dollar_value);
+  }).join(', ');
+};
+
+// answer
+{
+  // formatNumber :: String -> Object -> Number -> String
+  const formatNumber = (locales, options, number) => new Intl.NumberFormat(locales, options).format(number)
+
+  const curryFormatNumber = R.curryN(3, formatNumber);
+
+  // formatNumToUSD :: Number -> String
+  const formatNumToUSD = curryFormatNumber('en', { style: 'currency', currency: 'USD'}) 
+
+  // const convertToUSD = R.compose(
+  //   formatNumToUSD, 
+  //   R.prop('dollar_value')
+  // )
+
+  // convertToUSD :: String -> (Object -> String)
+  const convertToUSD = (name) => R.compose(
+    formatNumToUSD, 
+    R.prop(name)
+  )
+  
+  // convertToUSDWithDollarValue :: Object -> String
+  const convertToUSDWithDollarValue = convertToUSD('dollar_value')
+  // updateDollarValue :: a -> a
+  const updateDollarValue = it => R.assoc('dollar_value', convertToUSDWithDollarValue(it), it)
+  
+  // availablePrices :: [a] -> [a]
+  const availablePrices = R.compose(
+    R.map(updateDollarValue),
+    R.filter(R.prop('in_stock'))
+  )
+  console.log('availablePrices', availablePrices(CARS))
 }
