@@ -1,4 +1,4 @@
-import R, { reduce, map, add, replace } from 'ramda'
+import R, { reduce, map, add, replace, compose } from 'ramda'
 
 var CARS = [
   {name: "Ferrari FF", horsepower: 660, dollar_value: 700000, in_stock: true},
@@ -128,3 +128,71 @@ var availablePrices = function(cars) {
   )
   console.log('availablePrices', availablePrices(CARS))
 }
+
+{
+  // const compose = function (f, g) {
+  //   return function (x) {
+  //     return f(g(x))
+  //   }
+  // }
+
+  const toUpperCase = x => x.toUpperCase();
+  const exclain = x => x + '!';
+  const shout = compose(exclain, toUpperCase)
+
+  shout("send in the clowns");
+  //=> "SEND IN THE CLOWNS!"
+
+  const head = x => x[0]
+  const reverse = reduce((acc, x) => [x].concat(acc), [])
+  const last = compose(head, reverse)
+
+  last(['jumpkick', 'roundhouse', 'uppercut']);
+
+  const lastUpper = compose(toUpperCase, head, reverse)
+  lastUpper(['jumpkick', 'roundhouse', 'uppercut']);
+  //=> 'UPPERCUT'
+
+  const loudLastUpper = compose(exclaim, toUpperCase, head, reverse)
+  loudLastUpper(['jumpkick', 'roundhouse', 'uppercut']);
+  //=> 'UPPERCUT!'
+
+  // pointfree
+  {
+    const snakeCase = word => word.toLowerCase().replace(/\s+/ig, '_')
+
+    const snakeCasePf = compose(replace(/\s+/ig, '_'), toLowerCase)
+
+    const initials = name => name.split(' ').map(compose(toUpperCase, head)).join('. ');
+    initials('hunter stockton thompson')
+    // 'H. S. T'
+  }
+
+  // debug
+  {
+    // error
+    let latin = compose(map, angry, reverse)
+    latin(['frog', 'eye']);
+
+    // right
+    latin = compose(map(angry), reverse);
+
+    latin(['frog', 'eye'])
+
+    const trace = curry((tag, x) => {
+      console.log(tag, x)
+      return x
+    })
+
+    let dasherize = compose(join('-'), toLower, split(' '), replace(/\s{2,}/ig, ' '));
+    dasherize('The world is a vampire');
+    // TypeError: Cannot read property 'apply' of undefined
+
+    dasherize = compose(join('-'), toLower, trace("after split"), split(' '), replace(/\s{2,}/ig, ' '));
+    // after split [ 'The', 'world', 'is', 'a', 'vampire' ]
+
+    // right
+    dasherize = compose(join('-'), map(toLower), split(' '), replace(/\s{2,}/ig, ' '));
+  }
+}
+
